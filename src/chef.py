@@ -1,7 +1,13 @@
+# Python 2.x warn
+import sys
+if sys.version_info < (3,0):
+    print("This module requires python 3.x. Exiting.")
+    exit()
+
+from pathlib import Path
 import argparse
 import server
 import credentials
-from pathlib import Path
 
 parser = argparse.ArgumentParser(description="Run the Chef bot")
 parser.add_argument('--creds', \
