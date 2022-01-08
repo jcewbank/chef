@@ -30,7 +30,7 @@ class EmojiCache:
         # Try reading in persistent registries
         customPath = Path('emojis/custom/')
         if not customPath.exists():
-            os.mkdir(customPath)
+            os.makedirs(customPath)
         subDirs = next(os.walk(customPath))[1]
         for sd in subDirs:
             # Check for an emojis.json file in each subdir
