@@ -12,10 +12,10 @@ class Credentials:
         with open(fpath, 'r') as json_file:
             data = json.load(json_file)
             self._token = data["token"]
-            for k, v in data["users"].items():
-                self.users[k] = v
-            for k, v in data["channels"].items():
-                self.channels[k] = v
+            if "users" in data:
+                self.users = data["users"]
+            if "channels" in data:
+                self.channels = data["channels"]
                 
     def getToken(self):
         return self._token

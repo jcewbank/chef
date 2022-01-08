@@ -36,7 +36,7 @@ def get_emoji(name, emojis):
     
 async def handle_infractions(message):
     global _creds
-    if message.channel.id != _creds.channels.get("_channel_hi"):
+    if str(message.channel.id) != _creds.channels.get("channel_hi"):
         found = False
         c = message.content.lower()
         if regc_hi.match(message.content) is not None:
@@ -91,7 +91,7 @@ async def handle_emoji(message):
 async def handle_alan(message, t):
     global alan_go_to_bed
     global _creds
-    if message.author == _creds.users.get("alan"):
+    if str(message.author) == _creds.users.get("alan"):
         print('what to do about alan...')
         if alan_go_to_bed < 1 and t.tm_hour > 0 and t.tm.tm_hour < 3:
             print('before 3:00am -- light warning')
