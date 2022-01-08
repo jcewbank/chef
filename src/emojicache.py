@@ -29,6 +29,8 @@ class EmojiCache:
     def __init__(self):
         # Try reading in persistent registries
         customPath = Path('emojis/custom/')
+        if not customPath.exists():
+            os.mkdir(customPath)
         subDirs = next(os.walk(customPath))[1]
         for sd in subDirs:
             # Check for an emojis.json file in each subdir
@@ -61,7 +63,7 @@ class EmojiCache:
     def _refreshGuildReg(self, guildFolder):
         entries = []
         sPath = guildFolder / "emojis.json"
-        if sPath.exists:
+        if sPath.exists():
             try:
                 with open(sPath, 'r') as json_file:
                     data = json.load(json_file)

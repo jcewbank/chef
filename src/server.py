@@ -11,18 +11,11 @@ import re
 
 from discord.errors import HTTPException
 
-# Constants
-_TOKEN = '' # TODO read the token from file
-_chef = 163150392652333056
-_alan = 209051370878140416
-_john = 108760983257808896
-_jordan = 163150392652333056
-_channel_hi = 720409296378265791
-
 client = discord.Client()
 
 _guilds = []
 _emojiCache = None
+_creds = None
 
 #_banned_words = ["howdy","howdily","huu"]
 
@@ -42,7 +35,8 @@ def get_emoji(name, emojis):
         return name
     
 async def handle_infractions(message):
-    if message.channel.id != _channel_hi:
+    global _creds
+    if message.channel.id != _creds.channels.get("_channel_hi"):
         found = False
         c = message.content.lower()
         if regc_hi.match(message.content) is not None:
@@ -96,9 +90,10 @@ async def handle_emoji(message):
 
 async def handle_alan(message, t):
     global alan_go_to_bed
-    if message.author == _alan:
+    global _creds
+    if message.author == _creds.users.get("alan"):
         print('what to do about alan...')
-        if alan_go_to_bed < 1 and t.tm_hour > 0 and tm.tm_hour < 3:
+        if alan_go_to_bed < 1 and t.tm_hour > 0 and t.tm.tm_hour < 3:
             print('before 3:00am -- light warning')
             alan_go_to_bed = 1
             message.channel.send('Alan go to bed.')
@@ -153,5 +148,8 @@ async def on_message(message):
             await message.channel.send(strings.responses[idx])
         
     await handle_emoji(message)
-        
-client.run(_TOKEN)
+
+def run(creds):
+    global _creds
+    _creds = creds
+    client.run(_creds.getToken())
