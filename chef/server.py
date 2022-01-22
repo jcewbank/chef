@@ -104,7 +104,7 @@ async def handle_alan(message, t):
         else:
             print('uh oh it\'s alan')
             alan_go_to_bed = 0
-            message.channel.send('Alan thank you for sleeping.')
+            message.channel.send('Hey Alan. Thanks for getting some sleep.')
 
 @client.event
 async def on_ready():
