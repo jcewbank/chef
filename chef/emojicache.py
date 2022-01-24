@@ -3,6 +3,7 @@ import os
 import webutils
 import shutil
 import json
+import difflib
 
 ###
 # Emojis are generally stored in arrays of tuple pairs (entries) where each pair is
@@ -77,6 +78,29 @@ class EmojiCache:
             except KeyError:
                 # Something is wrong with the JSON - delete it so next try refreshes
                 shutil.rmtree(guildFolder)
+        
+    async def getFuzzyEmojiFilePath(self, guild, emoji_name):
+        try:
+            cached_guild = self._cache[str(guild.id)]
+        except KeyError:
+            # Try fetching the guild now
+            entries = self.fetchEmojis(guild)
+            if len(entries) == 0:
+                return None
+            cached_guild = self._cache[str(guild.id)]
+        try:
+            name = cached_guild["guild_name"]
+            guildName = name.replace(' ', '_')
+            entries = cached_guild["emojis"]
+            eKeys = entries.keys()
+            # difflib is overkill and doesn't match some normal substring use cases
+            #eMatches = difflib.get_close_matches(emoji_name, eKeys)
+            eMatches = [i for i in eKeys if emoji_name in i]
+            if len(eMatches) > 0:
+                return (Path(f'emojis/custom/{guildName}/'), eMatches)
+        except KeyError:
+            return None
+        return (None, None)
         
     def getEmojiFilePath(self, guild, emoji_name):
         try:

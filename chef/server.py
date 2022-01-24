@@ -64,26 +64,34 @@ async def handle_emoji(message):
         if message.content.startswith('!readReg'):
             got = _emojiCache.readGuildReg(message.guild)
             await message.channel.send(f'Emoji registry read complete\n{str(got)}')
-        if message.content.startswith('!clearEmojis'):
+        elif message.content.startswith('!clearEmojis'):
             cnt = _emojiCache.clearEmojis(message.guild)
             await message.channel.send(f'Deleted {cnt} emojis')     
-        if message.content.startswith('!fetchEmojis'):
+        elif message.content.startswith('!fetchEmojis'):
             gotten = _emojiCache.fetchEmojis(message.guild)
             await message.channel.send(f'Got {len(gotten)} emojis')
-        if message.content.startswith('!e '):
-            emojiName = message.content.lower()[3:]
-            # Try getting the file path from the cache
-            emojiPath = _emojiCache.getEmojiFilePath(message.guild, emojiName)
-            # Post the emoji to channel
-            if emojiPath is None:
-                await message.channel.send("can\'t find that emoji")
-            else:
-                await message.channel.send(file=discord.File(emojiPath))
-        if message.content.lower() == ("!elist"):
+        elif message.content.lower() == ("!elist"):
             emojis = _emojiCache.getEmojiList(message.guild)
             # Format the output
             s = textwrap.fill(', '.join(emojis), 40)
             await message.channel.send(s)
+            
+        eIdx = message.content.find('!e ')
+        if eIdx != -1:
+            emojiName = message.content.lower()[(eIdx + 3):].split()[0]
+            # Try getting the file path from the cache
+            #emojiPath = _emojiCache.getEmojiFilePath(message.guild, emojiName)
+            basePath, emojis = await _emojiCache.getFuzzyEmojiFilePath(message.guild, emojiName)
+            if basePath is None:
+                await message.channel.send("can\'t find that emoji")
+            elif len(emojis) == 0:
+                await message.channel.send("can\'t find that emoji")
+            elif len(emojis) == 1:
+                emojiPath = f'{basePath}/{emojis[0]}.png'
+                await message.channel.send(f'`{emojis[0]}`', file=discord.File(emojiPath))
+            elif len(emojis) > 1:
+                emojiPath = f'{basePath}/{emojis[0]}.png'
+                await message.channel.send(f'`{emojis[0]}` ({len(emojis)-1} alternates - try !elist)', file=discord.File(emojiPath))
             
     except BaseException as err:
         await message.channel.send('no. ' + f"Unexpected {err}, {type(err)}")

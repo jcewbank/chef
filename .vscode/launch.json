@@ -15,7 +15,7 @@
             "name": "Chef (explicit)",
             "type": "python",
             "request": "launch",
-            "program": "src/chef.py",
+            "program": "chef/chef.py",
             "args":["--creds", "credentials.json"],
             "console": "integratedTerminal"
         },
@@ -23,7 +23,7 @@
             "name": "Chef (implicit)",
             "type": "python",
             "request": "launch",
-            "program": "src/chef.py",
+            "program": "chef/chef.py",
             "console": "integratedTerminal"
         }
     ]
