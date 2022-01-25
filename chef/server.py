@@ -107,20 +107,19 @@ async def handle_emoji(message):
 async def handle_alan(message, t):
     global alan_go_to_bed
     global _creds
-    if str(message.author) == _creds.users.get("alan"):
+    #if str(message.author.id) == _creds.users.get('alan') or str(message.author.id) == _creds.users.get('jordan'):
+    if str(message.author.id) == _creds.users.get('alan'):
         print('what to do about alan...')
-        if alan_go_to_bed < 1 and t.tm_hour > 0 and t.tm.tm_hour < 3:
-            print('before 3:00am -- light warning')
+        if alan_go_to_bed < 1 and t.tm_hour > 0:
             alan_go_to_bed = 1
-            message.channel.send('Alan go to bed.')
+            await message.reply('go to bed')
         elif alan_go_to_bed < 2 and t.tm_hour < 6:
-            print('after 3:00am -- stern warning')
             alan_go_to_bed = 2
-            message.channel.send('Alan it\'s past THREE AM. GO TO BED.')
+            now = time.strftime("%H:%M", t)
+            await message.reply(f'it is {now} - _sleep_')
         else:
-            print('uh oh it\'s alan')
             alan_go_to_bed = 0
-            message.channel.send('Hey Alan. Thanks for getting some sleep.')
+            await message.reply('good morning')
 
 @client.event
 async def on_ready():

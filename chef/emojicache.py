@@ -6,8 +6,7 @@ import json
 import difflib
 
 ###
-# Emojis are generally stored in arrays of tuple pairs (entries) where each pair is
-# (emoji name, filename)
+# Emojis are generally stored in (emoji:filename) and (emoji:url) pairs
 ###
 
 class EmojiCache:
