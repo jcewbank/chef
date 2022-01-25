@@ -7,3 +7,6 @@ def download(url, outDir, outName):
     with open(q, 'wb') as outFile:
         content = requests.get(url, stream=True).content
         outFile.write(content)
+        
+def unpackUrl(url):
+    return f'{url.BASE}{url._url}'

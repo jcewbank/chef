@@ -81,17 +81,25 @@ async def handle_emoji(message):
             emojiName = message.content.lower()[(eIdx + 3):].split()[0]
             # Try getting the file path from the cache
             #emojiPath = _emojiCache.getEmojiFilePath(message.guild, emojiName)
-            basePath, emojis = await _emojiCache.getFuzzyEmojiFilePath(message.guild, emojiName)
-            if basePath is None:
+            #basePath, emojis = await _emojiCache.getFuzzyEmojiFilePath(message.guild, emojiName)
+            emojis = await _emojiCache.getEmojiURLs(message.guild, emojiName)
+            if emojis is None or len(emojis) == 0:
                 await message.channel.send("can\'t find that emoji")
-            elif len(emojis) == 0:
-                await message.channel.send("can\'t find that emoji")
-            elif len(emojis) == 1:
-                emojiPath = f'{basePath}/{emojis[0]}.png'
-                await message.channel.send(f'`{emojis[0]}`', file=discord.File(emojiPath))
-            elif len(emojis) > 1:
-                emojiPath = f'{basePath}/{emojis[0]}.png'
-                await message.channel.send(f'`{emojis[0]}` ({len(emojis)-1} alternates - try !elist)', file=discord.File(emojiPath))
+            #elif len(emojiDict) == 0:
+            #    await message.channel.send("can\'t find that emoji")
+            elif len(emojis) > 0:
+                eName = emojis[0][0]
+                eURL = emojis[0][1]
+                e = discord.Embed()
+                e.set_image(url=eURL)
+                await message.channel.send(embed=e)
+                # Maybe someday if they let bots edit messages other than their own
+                #fullLen = eIdx + 3 + len(emojiName)
+                #if message.content[fullLen] == ' ':
+                #    fullLen += 1
+                #cmd = message.content[(eIdx):fullLen]
+                #newMsg = message.content.replace(cmd, '')
+                #await message.edit(content=newMsg, embed=e)
             
     except BaseException as err:
         await message.channel.send('no. ' + f"Unexpected {err}, {type(err)}")
